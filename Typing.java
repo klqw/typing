@@ -1,6 +1,7 @@
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.*;
+import java.text.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -33,28 +34,30 @@ public class Typing extends Frame implements Runnable {
     double speed;
     String[][] menu = {{"", ""}, {"#b22222", "一般英単語"}, {"#32cd32", "プログラミング英単語"}, {"#4682b4", "混合英単語"}, {"#008b8b", "数字"}, {"#8b008b", "ランダム英数字"}, {"#696969", "終了"}};
     String[] generalWords = {
-        "apple", "ball", "cat", "dog", "elephant", "fish", "garden", "house", "island", "jungle",
+        "apple", "ball", "castle", "dog", "elephant", "fish", "garden", "house", "island", "jungle",
         "king", "lion", "monkey", "nest", "ocean", "park", "queen", "rainbow", "sun", "tree",
-        "umbrella", "violin", "water", "xylophone", "yellow", "zebra", "active", "beautiful", "curious", "dangerous",
+        "umbrella", "violin", "water", "xylophone", "yellow", "zebra", "arrow", "beautiful", "curious", "dangerous",
         "energetic", "friendly", "happy", "intelligent", "joyful", "kind", "lazy", "mindful", "nice", "optimistic",
-        "peaceful", "quiet", "reliable", "strong", "talented", "unique", "vibrant", "wise", "eager", "brave",
-        "card", "desk", "envelope", "fan", "glove", "hat", "ink", "journal", "key", "lamp",
-        "mirror", "notebook", "pen", "quiz", "ruler", "scissors", "table", "umbrella", "vase", "watch",
+        "peaceful", "quartz", "reliable", "strong", "talented", "uniform", "vibrant", "wise", "eager", "brave",
+        "card", "desk", "envelope", "fan", "glove", "hat", "ink", "journal", "knight", "lamp",
+        "mirror", "notebook", "pen", "quiz", "ruler", "scissors", "town", "uncle", "vase", "watch",
         "airport", "beach", "city", "desert", "forest", "gym", "hotel", "office", "pizza", "restaurant",
-        "school", "train", "university", "village", "worker", "youth", "zeal", "active", "basket", "chocolate",
+        "school", "train", "university", "village", "worker", "youth", "zeal", "earth", "basket", "chocolate",
         "dance", "egg", "football", "guitar", "hobby", "ice", "juice", "knife", "lemon", "mountain",
         "book", "car", "moon", "night", "paper", "river", "bag", "cloud", "red", "question",
-        "kite", "vegetable", "ear", "fire", "gift", "home", "internet", "love", "music", "open",
+        "kite", "vegetable", "ear", "fire", "gift", "heart", "internet", "love", "music", "octopus",
         "rest", "ship", "wave", "party", "zero", "chair", "energy", "grape", "jump", "mouth",
         "ability", "address", "angry", "beauty", "blue", "green", "building", "camera", "child", "clean",
         "climb", "comfortable", "country", "dark", "dream", "easy", "exercise", "family", "flower", "friend",
         "game", "gentle", "healthy", "important", "language", "magic", "market", "memory", "moment", "person",
-        "place", "rain", "road", "shop", "simple", "smile", "snow", "song", "sports", "star",
+        "place", "rain", "road", "shop", "simple", "smile", "snow", "song", "sport", "star",
+        "banana", "orange", "strawberry", "pineapple", "peach", "watermelon", "cherry", "raspberry", "apricot", "blueberry",
+        "purple", "pink", "black", "white", "gray", "brown", "gold", "silver", "turquoise", "lavender",
         "story", "summer", "teach", "test", "travel", "warm", "wonderful", "world", "answer", "zone"
     };
     String[] programWords = {
         "char", "int", "double", "long", "string", "boolean", "print", "void", "class", "super",
-        "new", "static", "this", "final", "public", "private", "protected", "import", "extends", "interface",
+        "new", "static", "this", "finally", "public", "private", "protected", "import", "extends", "interface",
         "package", "try", "catch", "append", "delete", "random", "round", "floor", "ceil", "length",
         "implements", "sleep", "add", "remove", "get", "sort", "size", "put", "main", "exit",
         "margin", "padding", "border", "bold", "italic", "plain", "wrap", "opacity", "div", "span",
@@ -65,7 +68,13 @@ public class Typing extends Frame implements Runnable {
         "execute", "fetch", "header", "session", "cookie", "href", "unset", "dbconnect", "echo", "bind",
         "location", "isset", "trim", "sanitize", "encode", "decode", "json", "query", "method", "empty",
         "window", "box", "year", "month", "top", "bottom", "left", "right", "true", "false",
-        "var", "let", "const", "width", "height", "start", "system", "continue", "return", "break"
+        "var", "let", "const", "width", "height", "start", "system", "continue", "return", "break",
+        "attribute", "then", "split", "slice", "array", "footer", "event", "printf", "scanf", "include",
+        "for", "foreach", "while", "override", "block", "format", "write", "else", "default", "short",
+        "float", "putchar", "register", "visibility", "clear", "position", "direction", "equals", "relative", "absolute",
+        "max", "min", "pow", "clone", "from", "parse", "integer", "switch", "console", "case",
+        "frame", "instanceof", "construct", "input", "textarea", "action", "type", "submit", "value", "option",
+        "charset", "body", "meta", "namespace", "thread", "server", "path", "strlen", "substr", "hash"
     };
     char[] numbers = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     char[] randomChars = {
@@ -82,7 +91,7 @@ public class Typing extends Frame implements Runnable {
     public Typing() {
         super("Typing");
         setVisible(true);
-        setSize(1500, 1000);
+        setSize(1300, 900);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
@@ -90,7 +99,7 @@ public class Typing extends Frame implements Runnable {
         });
 
         selects.setLocation(100, 100);
-        selects.setSize(1200, 170);
+        selects.setSize(1100, 170);
         selects.setFont(new Font("SansSerif", Font.BOLD, 30));
         selects.setForeground(new Color(25, 25, 112));
         display.setLocation(100, 300);
@@ -102,28 +111,27 @@ public class Typing extends Frame implements Runnable {
         display.setDisabledTextColor(new Color(33, 33, 33));
         cnt.setLocation(100, 700);
         cnt.setSize(200, 30);
-        cnt.setFont(new Font("SansSerif", Font.BOLD, 30));
+        cnt.setFont(new Font("SansSerif", Font.PLAIN, 30));
         cnt.setForeground(new Color(30, 144, 255));
         ok.setLocation(400, 700);
         ok.setSize(150, 35);
-        ok.setFont(new Font("SansSerif", Font.BOLD, 30));
+        ok.setFont(new Font("SansSerif", Font.PLAIN, 30));
         ok.setForeground(new Color(34, 139, 34));
         ng.setLocation(700, 700);
         ng.setSize(150, 35);
-        ng.setFont(new Font("SansSerif", Font.BOLD, 30));
+        ng.setFont(new Font("SansSerif", Font.PLAIN, 30));
         ng.setForeground(new Color(255, 69, 0));
         time.setLocation(100, 750);
         time.setSize(300, 35);
-        time.setFont(new Font("SansSerif", Font.BOLD, 30));
+        time.setFont(new Font("SansSerif", Font.PLAIN, 30));
         time.setForeground(new Color(89, 89, 171));
         spd.setLocation(550, 750);
         spd.setSize(350, 35);
-        spd.setFont(new Font("SansSerif", Font.BOLD, 30));
+        spd.setFont(new Font("SansSerif", Font.PLAIN, 30));
         spd.setForeground(new Color(183, 134, 11));
-        rec.setLocation(100, 800);
-        rec.setSize(750, 35);
-        rec.setFont(new Font("SansSerif", Font.BOLD, 30));
-        // rec.setForeground(new Color(89, 89, 171));
+        rec.setLocation(100, 790);
+        rec.setSize(1100, 80);
+        rec.setFont(new Font("SansSerif", Font.PLAIN, 30));
 
         add(selects);
         add(display);
@@ -150,16 +158,15 @@ public class Typing extends Frame implements Runnable {
                         case '1':
                             resetDisplay();
                             selected = 1;
-                            setWords(selected, 5, generalWords);
+                            setWords(50, generalWords);
                             selects.setText(setSelectDisplay());
                             display.setText(dispStrings);
-                            // timeDisplay();
                             recordDisplay(false);
                             break;
                         case '2':
                             resetDisplay();
                             selected = 2;
-                            setWords(selected, 50, programWords);
+                            setWords(50, programWords);
                             selects.setText(setSelectDisplay());
                             display.setText(dispStrings);
                             recordDisplay(false);
@@ -167,7 +174,7 @@ public class Typing extends Frame implements Runnable {
                         case '3':
                             resetDisplay();
                             selected = 3;
-                            setWords(selected, 70, generalWords, programWords);
+                            setWords(70, generalWords, programWords);
                             selects.setText(setSelectDisplay());
                             display.setText(dispStrings);
                             recordDisplay(false);
@@ -175,7 +182,7 @@ public class Typing extends Frame implements Runnable {
                         case '4':
                             resetDisplay();
                             selected = 4;
-                            setStrings(selected, 25, numbers);
+                            setStrings(25, numbers);
                             selects.setText(setSelectDisplay());
                             display.setText(dispStrings);
                             recordDisplay(false);
@@ -183,7 +190,7 @@ public class Typing extends Frame implements Runnable {
                         case '5':
                             resetDisplay();
                             selected = 5;
-                            setStrings(selected, 25, randomChars);
+                            setStrings(25, randomChars);
                             selects.setText(setSelectDisplay());
                             display.setText(dispStrings);
                             recordDisplay(false);
@@ -216,8 +223,7 @@ public class Typing extends Frame implements Runnable {
                         if (c == s0) {
                             tmpDisp.delete(0, 1);
                             holdStrings = tmpDisp.toString();
-                            // dispStrings = holdStrings.toUpperCase();
-                            dispStrings = replaceStrings(holdStrings, selected);
+                            dispStrings = replaceStrings(holdStrings);
                             typeCount++;
                             goodCount++;
                             display.setText(dispStrings);
@@ -259,39 +265,46 @@ public class Typing extends Frame implements Runnable {
     }
 
     // 英単語選択時の処理
-    public void setWords(int sel, int qty, String[]... words) {
+    public void setWords(int qty, String[]... words) {
+        int count = 0;
+        boolean duplicate = false;
         StringBuffer tmpStrings = new StringBuffer();
-        switch (sel) {
-            case 1:
-            case 2:
-                for (int i = 0; i < qty; i++) {
-                    int index = (int)(Math.random() * words[0].length);
-                    tmpStrings.append(words[0][index]);
-                    if (i != (qty - 1)) {
-                        tmpStrings.append('\s');
-                    }
+        ArrayList<String> tmpWords = new ArrayList<>();
+
+        while (count < qty) {
+            int choose = (int)(Math.random() * words.length);
+            int index = (int)(Math.random() * words[choose].length);
+
+            // 選出されたWordの重複確認
+            for (String w : tmpWords) {
+                if (w == words[choose][index]) {
+                    duplicate = true;
+                    break;
+                } else {
+                    duplicate = false;
                 }
-                break;
-            case 3:
-                for (int i = 0; i < qty; i++) {
-                    int choose = (int)(Math.random() * words.length);
-                    int index = (int)(Math.random() * words[choose].length);
-                    tmpStrings.append(words[choose][index]);
-                    if (i != (qty - 1)) {
-                        tmpStrings.append('\s');
-                    }
+            }
+
+            // 選出されたWordが重複していない場合のみArrayListとStringBufferに追加する
+            if (!duplicate) {
+                count++;
+                tmpWords.add(words[choose][index]);
+                tmpStrings.append(words[choose][index]);
+                if (qty != count) {
+                    tmpStrings.append('\s');
                 }
-                break;
-            default:
-                break;
+            }
         }
+        // System.out.println("tmpWords.size: " + tmpWords.size());
+        // System.out.println(tmpWords);
+
         holdStrings = tmpStrings.toString();
-        dispStrings = replaceStrings(holdStrings, sel);
+        dispStrings = replaceStrings(holdStrings);
         selectable = false;
     }
 
     // 数字 or ランダム英数字選択時の処理
-    public void setStrings(int sel, int qty, char[] chars) {
+    public void setStrings(int qty, char[] chars) {
         int index = (int)(Math.random() * chars.length);
         int tmpIndex = index;
         StringBuffer tmpStrings = new StringBuffer();
@@ -308,30 +321,39 @@ public class Typing extends Frame implements Runnable {
             }
         }
         holdStrings = tmpStrings.toString();
-        dispStrings = replaceStrings(holdStrings, sel);
+        dispStrings = replaceStrings(holdStrings);
         selectable = false;
     }
 
     // 文字列置換
-    public String replaceStrings(String str, int sel) {
-        String tmpStrings = "";
-        switch (sel) {
+    public String replaceStrings(String str) {
+        String resStrings = "";
+        StringBuffer tmpStrings = new StringBuffer();
+        switch (selected) {
             case 1:
             case 2:
             case 3:
-                tmpStrings = str.replace('\s', '␣');
+                resStrings = str.replace('\s', '␣');
                 break;
             case 4:
             case 5:
-                tmpStrings = str.replace('\s', '␣');
-                tmpStrings = tmpStrings.toUpperCase();
+                resStrings = str.toUpperCase();
+                for (int i = 0; i < resStrings.length(); i++) {
+                    char tmpChar = resStrings.charAt(i);
+                    if (tmpChar != '\s') {
+                        tmpChar += 0xfee0;
+                    }
+                    tmpStrings.append(tmpChar);
+                }
+                resStrings = tmpStrings.toString();
+                resStrings = resStrings.replace('\s', '␣');
                 break;
             default:
-                tmpStrings = str;
+                resStrings = str;
                 break;
         }
-        // System.out.println(tmpStrings);
-        return tmpStrings;
+        // System.out.println(resStrings);
+        return resStrings;
     }
 
     // ----------ラベル表示処理----------
@@ -369,22 +391,12 @@ public class Typing extends Frame implements Runnable {
     }
 
     public void speedDisplay() {
-        if (elapsedTime != 0) {
-            speed = goodCount * (60.0 / elapsedTime);
-            // 小数点第一位まで表示
-            speed *= 10;
-            speed = Math.round(speed);
-            speed /= 10;
-        } else {
-            speed = 0.0;
-        }
         spd.setText("Speed: " + speed + " key / min");
     }
 
     public void recordDisplay(boolean newFlag) {
-        // System.out.println("Record: " + readRecord(selected));
         String newRecord = (newFlag) ? "New Record!!" : "";
-        String recText = "<html><div style=\"color: " + menu[selected][0] + "\">Best Record: " + readRecord(selected) + " key / min　<span style=\"color: #ff0000\">" + newRecord + "</span></html>";
+        String recText = "<html><div style=\"border: 1px solid #ddd; padding: 5px 10px; color: " + menu[selected][0] + "\">Best Record: " + readRecordSpeed() + " key / min　" + readRecordDate() + "　<span style=\"color: #ff0000\">" + newRecord + "</span></html>";
         rec.setText(recText);
     }
 
@@ -412,10 +424,11 @@ public class Typing extends Frame implements Runnable {
         new Thread(() -> {
             while (!selectable) {
                 try {
+                    setSpeed();
                     timeDisplay();
                     speedDisplay();
-                    elapsedTime++;
                     Thread.sleep(1000);
+                    elapsedTime++;
                 } catch (InterruptedException e) {}
             }
         }).start();
@@ -427,56 +440,105 @@ public class Typing extends Frame implements Runnable {
 
     // タイピング終了時の処理
     public void finished() {
-        String dispMsg = "<html><div style=\"border: 1px solid #ddd; padding: 15px 5px\">タイピング終了！！！(選択モードに戻ります...)</div></html>";
-        new Thread(() -> {
-            try {
-                selects.setText(dispMsg);
-                selectable = true;
-                typing = false;
-                writeRecord(selected, speed, holdStrings);
-                Thread.sleep(1000);
-                dispStrings = "ここに文字列が表示されます";
-                display.setText(dispStrings);
-                selects.setText(setSelectDisplay());
-            } catch (InterruptedException e) {}
-        }).start();
+        String dispMsg;
+        if (holdStrings.length() == 0) {
+            dispMsg = "<html><div style=\"border: 1px solid #ddd; padding: 15px 5px\">タイピング終了！！！ お疲れさまでした (選択モードに戻ります...)</div></html>";
+            new Thread(() -> {
+                try {
+                    setSpeed();
+                    selectable = true;
+                    typing = false;
+                    selects.setText(dispMsg);
+                    speedDisplay();
+                    writeRecord();
+                    Thread.sleep(3000);
+                    dispStrings = "ここに文字列が表示されます";
+                    display.setText(dispStrings);
+                    selects.setText(setSelectDisplay());
+                } catch (InterruptedException e) {}
+            }).start();
+        } else {
+            dispMsg = "<html><div style=\"border: 1px solid #ddd; padding: 15px 5px\">タイピング終了！！！ (選択モードに戻ります...)</div></html>";
+            new Thread(() -> {
+                try {
+                    selects.setText(dispMsg);
+                    selectable = true;
+                    typing = false;
+                    Thread.sleep(1000);
+                    dispStrings = "ここに文字列が表示されます";
+                    display.setText(dispStrings);
+                    selects.setText(setSelectDisplay());
+                    rec.setText("");
+                } catch (InterruptedException e) {}
+            }).start();
+        }
+
+    }
+
+    // Speed計算
+    public void setSpeed() {
+        if (elapsedTime != 0) {
+            speed = goodCount * (60.0 / elapsedTime);
+            // 小数点第一位まで表示
+            speed *= 10;
+            speed = Math.round(speed);
+            speed /= 10;
+        } else {
+            speed = 0.0;
+        }
     }
 
     // 記録をファイルに書き出す
-    public void writeRecord(int sel, double spd, String hld) {
-        double tmpSpd;
-        if (readRecord(sel) == "-----") {
-            tmpSpd = 0.0;
+    public void writeRecord() {
+        double tmpSpeed;
+        if (readRecordSpeed() == "--------") {
+            tmpSpeed = 0.0;
         } else {
-            tmpSpd = Double.parseDouble(readRecord(sel));
+            tmpSpeed = Double.parseDouble(readRecordSpeed());
         }
-        if (spd > tmpSpd && hld.length() == 0) {
+        if (speed > tmpSpeed) {
             try {
-                String filename = "record" + sel + ".txt";
-                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(filename)));
-                pw.println(spd);
+                String fileName = "record" + selected + ".txt";
+                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+                pw.println(speed);
                 pw.close();
                 recordDisplay(true);
             } catch (IOException e) {
-                System.out.println("ファイル出力エラーです");
+                // System.out.println("ファイル出力エラーです");
             }
         }
     }
 
     // 記録をファイルから読み出す
-    public String readRecord(int sel) {
-        String speedRecord = "-----";
+    public String readRecordSpeed() {
+        String recordSpeed = "--------";
         try {
-            String filename = "record" + sel + ".txt";
-            BufferedReader br = new BufferedReader(new FileReader(filename));
-            speedRecord = br.readLine();
-            Path path = Paths.get(filename);
-            FileTime fileTime = Files.getLastModifiedTime(path);
-            System.out.println(fileTime);
-            // System.out.println(speedRecord);
+            String fileName = "record" + selected + ".txt";
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            recordSpeed = br.readLine();
+            br.close();
+            // System.out.println(recordSpeed);
         } catch (IOException e) {
-            System.out.println("ファイルを読み込めませんでした");
+            // System.out.println("ファイルを読み込めませんでした");
         }
-        return speedRecord;
+        return recordSpeed;
+    }
+
+    public String readRecordDate() {
+        String recordDate = "";
+        try {
+            String fileName = "record" + selected + ".txt";
+            // ファイルの更新日時を取得する
+            Path path = Paths.get(fileName);
+            FileTime fileTime = Files.getLastModifiedTime(path);
+            long millis = fileTime.toMillis();
+            // System.out.println("ミリ秒表示: " + millis);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            recordDate = sdf.format(millis);
+            // System.out.println("年月日時分秒表示: " + recordDate);
+        } catch (IOException e) {
+            // System.out.println("ファイルを読み込めませんでした");
+        }
+        return recordDate;
     }
 }
