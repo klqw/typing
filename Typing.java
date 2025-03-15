@@ -468,7 +468,7 @@ public class Typing extends Frame implements Runnable {
                     selects.setText(dispMsg);
                     selectable = true;
                     typing = false;
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                     dispStrings = "ここに文字列が表示されます";
                     display.setText(dispStrings);
                     selects.setText(setSelectDisplay());
