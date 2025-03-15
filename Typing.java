@@ -26,8 +26,9 @@ public class Typing extends Frame implements Runnable {
     int typeCount;
     int goodCount;
     int missCount;
-    boolean selectable = true;  // 選択モード / タイピングモードの状態確認用
-    boolean typing = false; // タイピングモード時のフラグ管理用
+    boolean keyable = true; // モード切り替え時のキー入力管理用
+    boolean selectable = true;  // [選択モード / タイピングモード]の状態確認用
+    boolean typing = false; // タイピングモード時のタイマー管理用
     int elapsedTime;
     double speed;
     // メニューのフォントカラー+文言格納用
@@ -157,96 +158,100 @@ public class Typing extends Frame implements Runnable {
             public void keyTyped(KeyEvent e) {}
             @Override
             public void keyPressed(KeyEvent e) {
-                c = e.getKeyChar();
-                if (selectable) {   // 選択モードの処理
-                    switch (c) {
-                        case '1':
-                            resetDisplay();
-                            selected = 1;
-                            setWords(quantities[0], generalWords);
-                            selects.setText(setSelectDisplay());
-                            display.setText(dispStrings);
-                            recordDisplay(false);
-                            break;
-                        case '2':
-                            resetDisplay();
-                            selected = 2;
-                            setWords(quantities[1], programWords);
-                            selects.setText(setSelectDisplay());
-                            display.setText(dispStrings);
-                            recordDisplay(false);
-                            break;
-                        case '3':
-                            resetDisplay();
-                            selected = 3;
-                            setWords(quantities[2], generalWords, programWords);
-                            selects.setText(setSelectDisplay());
-                            display.setText(dispStrings);
-                            recordDisplay(false);
-                            break;
-                        case '4':
-                            resetDisplay();
-                            selected = 4;
-                            setStrings(quantities[3], numbers);
-                            selects.setText(setSelectDisplay());
-                            display.setText(dispStrings);
-                            recordDisplay(false);
-                            break;
-                        case '5':
-                            resetDisplay();
-                            selected = 5;
-                            setStrings(quantities[4], randomChars);
-                            selects.setText(setSelectDisplay());
-                            display.setText(dispStrings);
-                            recordDisplay(false);
-                            break;
-                        case '6':
-                            System.exit(0);
-                            break;
-                        default:
-                            break;
-                    }
-                } else {    // タイピングモードの処理
-                    // System.out.println(c);
-                    char s0 = holdStrings.charAt(0);
-                    // System.out.println(s0);
-                    StringBuffer tmpDisp = new StringBuffer();
-                    tmpDisp.append(holdStrings);
-                    if (!typing) {
-                        started();
-                    }
-                    typing = true;
-
-                    // Escキーで選択モードに移行
-                    if (c == 0x1b) {
-                        finished();
-                        return;
-                    }
-
-                    // 入力されたキーに応じた処理
-                    if (holdStrings.length() > 0) {
-                        if (c == s0) {
-                            tmpDisp.delete(0, 1);
-                            holdStrings = tmpDisp.toString();
-                            dispStrings = replaceStrings(holdStrings);
-                            typeCount++;
-                            goodCount++;
-                            display.setText(dispStrings);
-                            countDisplay();
-                            goodDisplay();
-                            speedDisplay();
-                            // System.out.println("OK");
-                            if (holdStrings.length() == 0) {   // タイピング終了後の処理
-                                finished();
+                if (keyable) {
+                    new Thread(() -> {
+                        c = e.getKeyChar();
+                        if (selectable) {   // 選択モードの処理
+                            switch (c) {
+                                case '1':
+                                    resetDisplay();
+                                    selected = 1;
+                                    setWords(quantities[0], generalWords);
+                                    selects.setText(setSelectDisplay());
+                                    display.setText(dispStrings);
+                                    recordDisplay(false);
+                                    break;
+                                case '2':
+                                    resetDisplay();
+                                    selected = 2;
+                                    setWords(quantities[1], programWords);
+                                    selects.setText(setSelectDisplay());
+                                    display.setText(dispStrings);
+                                    recordDisplay(false);
+                                    break;
+                                case '3':
+                                    resetDisplay();
+                                    selected = 3;
+                                    setWords(quantities[2], generalWords, programWords);
+                                    selects.setText(setSelectDisplay());
+                                    display.setText(dispStrings);
+                                    recordDisplay(false);
+                                    break;
+                                case '4':
+                                    resetDisplay();
+                                    selected = 4;
+                                    setStrings(quantities[3], numbers);
+                                    selects.setText(setSelectDisplay());
+                                    display.setText(dispStrings);
+                                    recordDisplay(false);
+                                    break;
+                                case '5':
+                                    resetDisplay();
+                                    selected = 5;
+                                    setStrings(quantities[4], randomChars);
+                                    selects.setText(setSelectDisplay());
+                                    display.setText(dispStrings);
+                                    recordDisplay(false);
+                                    break;
+                                case '6':
+                                    System.exit(0);
+                                    break;
+                                default:
+                                    break;
                             }
-                        } else {
-                            typeCount++;
-                            missCount++;
-                            countDisplay();
-                            missDisplay();
-                            // System.out.println("NG");
+                        } else {    // タイピングモードの処理
+                            // System.out.println(c);
+                            char s0 = holdStrings.charAt(0);
+                            // System.out.println(s0);
+                            StringBuffer tmpDisp = new StringBuffer();
+                            tmpDisp.append(holdStrings);
+                            if (!typing) {
+                                typing = true;
+                                started();
+                            }
+
+                            // Escキーで選択モードに移行
+                            if (c == 0x1b) {
+                                finished();
+                                return;
+                            }
+
+                            // 入力されたキーに応じた処理
+                            if (holdStrings.length() > 0) {
+                                if (c == s0) {
+                                    tmpDisp.delete(0, 1);
+                                    holdStrings = tmpDisp.toString();
+                                    dispStrings = replaceStrings(holdStrings);
+                                    typeCount++;
+                                    goodCount++;
+                                    display.setText(dispStrings);
+                                    countDisplay();
+                                    goodDisplay();
+                                    speedDisplay();
+                                    // System.out.println("OK");
+                                    if (holdStrings.length() == 0) {   // タイピング終了後の処理
+                                        finished();
+                                    }
+                                } else {
+                                    typeCount++;
+                                    missCount++;
+                                    countDisplay();
+                                    missDisplay();
+                                    // System.out.println("NG");
+                                }
+                            }
                         }
-                    }
+                    }).start();
                 }
             }
             @Override
@@ -426,7 +431,7 @@ public class Typing extends Frame implements Runnable {
     // タイピング開始時の処理
     public void started() {
         new Thread(() -> {
-            while (!selectable) {
+            while (typing) {
                 try {
                     setSpeed();
                     timeDisplay();
@@ -438,44 +443,47 @@ public class Typing extends Frame implements Runnable {
         }).start();
     }
 
-    @Override
-    public void run() {
-    }
-
-    // タイピング終了時の処理
+    // タイピング終了時の処理1
     public void finished() {
+        keyable = false;
+        typing = false;
+        selectable = true;
         String dispMsg;
         if (holdStrings.length() == 0) {
             dispMsg = "<html><div style=\"border: 1px solid #ddd; padding: 15px 5px\">タイピング終了！！！ お疲れさまでした (選択モードに戻ります...)</div></html>";
-            new Thread(() -> {
-                try {
-                    selectable = true;
-                    typing = false;
-                    setSpeed();
-                    speedDisplay();
-                    selects.setText(dispMsg);
-                    writeRecord();
-                    Thread.sleep(3000);
-                    dispStrings = "ここに文字列が表示されます";
-                    display.setText(dispStrings);
-                    selects.setText(setSelectDisplay());
-                } catch (InterruptedException e) {}
-            }).start();
+            selects.setText(dispMsg);
         } else {
             dispMsg = "<html><div style=\"border: 1px solid #ddd; padding: 15px 5px\">タイピング終了！！！ (選択モードに戻ります...)</div></html>";
-            new Thread(() -> {
-                try {
-                    selects.setText(dispMsg);
-                    selectable = true;
-                    typing = false;
-                    Thread.sleep(1000);
-                    dispStrings = "ここに文字列が表示されます";
-                    display.setText(dispStrings);
-                    selects.setText(setSelectDisplay());
-                    rec.setText("");
-                } catch (InterruptedException e) {}
-            }).start();
+            selects.setText(dispMsg);
         }
+        Thread th = new Thread(this);
+        th.start();
+        try {
+            th.join();
+        } catch (InterruptedException e) {}
+        keyable = true;
+    }
+
+    // タイピング終了時の処理2
+    @Override
+    public void run() {
+        try {
+            if (holdStrings.length() == 0) {
+                setSpeed();
+                speedDisplay();
+                writeRecord();
+                Thread.sleep(3000);
+                dispStrings = "ここに文字列が表示されます";
+                display.setText(dispStrings);
+                selects.setText(setSelectDisplay());
+            } else {
+                Thread.sleep(1000);
+                dispStrings = "ここに文字列が表示されます";
+                display.setText(dispStrings);
+                selects.setText(setSelectDisplay());
+                rec.setText("");
+            }
+        } catch (InterruptedException e) {}
     }
 
     // Speed計算
