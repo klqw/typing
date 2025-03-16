@@ -1,2 +1,4 @@
-*.class
-record*
+typing_later/*.class
+typing_later/record*
+typing_prev/*.class
+typing_prev/record*
